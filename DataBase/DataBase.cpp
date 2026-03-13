@@ -9,8 +9,19 @@ using namespace std;
 void AddData() // TODO: HistLL
 {
 	system("cls");
-	cout << "Добавление данных о автомобиле:\n";
-	// здесь реализуете свой алгоритм
+	char vin[17], brand[7], model[10], carcase[15], drive[10];
+	cout << "Добавление данных о автомобиле:\n \n";
+	cout << "Введите уникальный номер автомобиля: ";
+	cin >> vin;
+	cout << "Введите марку автомобиля: ";
+	cin >> brand;
+	cout << "Введите модель автомобиля: ";
+	cin >> model;
+	cout << "Введите тип кузова автомобиля: ";
+	cin >> carcase;
+	cout << "Введите тип привода автомобиля: ";
+	cin >> drive;
+
 	_getch();
 }
 
