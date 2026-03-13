@@ -17,14 +17,14 @@ struct ListUser
 };
 
 // печатает элемент списка в консоли O(1)
-void PrintItem(ListAuto* item);
+void PrintAuto(ListAuto* item);
 
 // печатает весь список в консоль O(n)
-void PrintList(ListAuto* firstItem);
+void PrintListAuto(ListAuto* firstItem);
 
 // удаление списка O(n)
 // указатель на первый элемент передаем по ссылке
-void DeleteList(ListAuto*& firstItem);
+void DeleteListAuto(ListAuto*& firstItem);
 
 // Функция получения указателя на последний элемент O(n)
 // Если функция не изменяет указатель на первый элемент, то передаем его по значению
@@ -40,16 +40,18 @@ ListAuto* AddLast(
     char drive[10]
 );
 
-// добавление элемента после заданного O(1)
-//ListAuto* AddAfter(
-//    ListAuto* prevItem,
-//    int productId,
-//    const char* productName,
-//    float productPrice,
-//    float productCount);
+
 
 // поиск элемента по названию продукта O(n)
 ListAuto* FindAuto(ListAuto* firstItem, const char* productName);
 
 // авторизация пользователя
 bool FindUser(ListUser* firstItem, const char* productName);
+
+bool SaveListToBinaryFile(ListAuto* firstItem, const std::string& filename);
+
+ListAuto* LoadListFromBinaryFile(const std::string& filename);
+
+bool SaveListToTextFile(ListAuto* firstItem, const std::string& filename);
+
+ListAuto* LoadListFromTextFile(const std::string& filename);
