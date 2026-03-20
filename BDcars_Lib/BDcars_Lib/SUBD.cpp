@@ -18,7 +18,7 @@ void PrintAuto(ListAuto* item)
 
 void PrintListAuto(ListAuto* firstItem)
 {
-    std::cout << std::endl;
+    cout << endl;
     auto temp = firstItem; // начинаем с первого элемента
     while (temp != nullptr) // перебираем весь список
     {
