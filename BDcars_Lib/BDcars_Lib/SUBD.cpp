@@ -1,4 +1,3 @@
-// V1.0 Beta
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -67,13 +66,13 @@ bool DeleteAuto(
 
 
 
-void Replace(char* str, char what, char value)
-{
-    int len = strlen(str);
-    for (int i = 0; i < len; i++)
-        if (str[i] == what)
-            str[i] = value;
-}
+//void Replace(char* str, char what, char value)
+//{
+//    int len = strlen(str);
+//    for (int i = 0; i < len; i++)
+//        if (str[i] == what)
+//            str[i] = value;
+//}
 
 ListAuto* GetLast(ListAuto* firstItem)
 {
@@ -189,37 +188,37 @@ ListAuto* LoadListFromBinaryFile(const string& filename)
     return first;
 }
 
-bool SaveListToTextFile(ListAuto* firstItem, const std::string& filename)
-{
-    if (firstItem == nullptr) return false;
-    std::ofstream f(filename);
-    if (!f) return false;
-    auto temp = firstItem;
-    char itemCopy[30];
-    while (temp != nullptr)
-    {
-        strcpy_s(itemCopy, temp->brand);
-        Replace(itemCopy, ' ', '_');
-        f << temp->vin << " " << itemCopy << " " << temp->model
-            << " " << temp->carcase << "\n";
-        temp = temp->next;
-    }
-    bool result = f.good();
-    f.close();
-    return result;
-}
-
-ListAuto* LoadListFromTextFile(const std::string& filename)
-{
-    std::ifstream f(filename);
-    if (!f) return nullptr;
-    ListAuto item;
-    ListAuto* first = nullptr;
-    while (f >> item.vin >> item.brand >> item.model >> item.carcase >> item.drive)
-    {
-        Replace(item.brand, '_', ' ');
-        AddLast(first, item.vin, item.brand, item.model, item.carcase, item.drive);
-    }
-    f.close();
-    return first;
-}
+//bool SaveListToTextFile(ListAuto* firstItem, const std::string& filename)
+//{
+//    if (firstItem == nullptr) return false;
+//    std::ofstream f(filename);
+//    if (!f) return false;
+//    auto temp = firstItem;
+//    char itemCopy[30];
+//    while (temp != nullptr)
+//    {
+//        strcpy_s(itemCopy, temp->brand);
+//        Replace(itemCopy, ' ', '_');
+//        f << temp->vin << " " << itemCopy << " " << temp->model
+//            << " " << temp->carcase << "\n";
+//        temp = temp->next;
+//    }
+//    bool result = f.good();
+//    f.close();
+//    return result;
+//}
+//
+//ListAuto* LoadListFromTextFile(const std::string& filename)
+//{
+//    std::ifstream f(filename);
+//    if (!f) return nullptr;
+//    ListAuto item;
+//    ListAuto* first = nullptr;
+//    while (f >> item.vin >> item.brand >> item.model >> item.carcase >> item.drive)
+//    {
+//        Replace(item.brand, '_', ' ');
+//        AddLast(first, item.vin, item.brand, item.model, item.carcase, item.drive);
+//    }
+//    f.close();
+//    return first;
+//}
