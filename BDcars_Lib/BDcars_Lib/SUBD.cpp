@@ -6,6 +6,7 @@ using namespace std;
 
 void PrintAuto(ListAuto* item)
 {
+    setlocale(LC_ALL, "rus");
     if (item == nullptr) return; // проверяем корректность указателя
     cout << "Универсальный номер: " << item->vin << endl; // далее выводим данные в консоль
     cout << "Название: " << item->brand << endl;
