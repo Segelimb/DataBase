@@ -77,6 +77,8 @@ void PrintFilteredData()
 // функция загрузки данных
 bool LoadData(ListAuto* &firstItemAuto, ListAuto* &firstItemUser)
 {
+	//firstItemAuto = LoadListFromBinaryFile(autoFileName)
+	//firstItemUser = LoadListFromBinaryFile(userFileName)
 	//if(firstItemAuto || firstItemUser == nullptr) return false;
 	return true;
 }
@@ -89,8 +91,7 @@ bool Authorization(ListAuto* firstItemUser)
 	cout << "Введите пароль: ";
 	cin >> password;
 	return true;
-	// if(FindUser(firstItemUser, login, password)) cout << "/nАвторизация выполнена успешно!"
-
+	//if (FindUser(firstItemUser, *login, *password)) cout << "/nАвторизация выполнена успешно!";
 }
 
 // вывод в консоль меню программы
@@ -146,6 +147,7 @@ void HandleEvents()
 			PrintFilteredData();
 			break;
 		case '5': // // если 1 то выходим
+			//SaveListToBinaryFile(firstItemUser)
 			return;
 		}
 	}
