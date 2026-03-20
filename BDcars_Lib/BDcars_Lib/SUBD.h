@@ -25,6 +25,7 @@ void PrintListAuto(ListAuto* firstItem);
 // удаление списка O(n)
 // указатель на первый элемент передаем по ссылке
 void DeleteListAuto(ListAuto*& firstItem);
+void DeleteAutoForFilter(ListAuto*& firstItem);
 
 // Функция получения указателя на последний элемент O(n)
 // Если функция не изменяет указатель на первый элемент, то передаем его по значению
@@ -40,13 +41,20 @@ ListAuto* AddLast(
     char drive[10]
 );
 
-void Replace(ListAuto* item, char newProductVin, const char* newProductBrand, char newProductModel, char newProductCarcase, char newProductDrive);
+void AddFirst(
+    ListAuto*& firstItem,
+    char Vin[17],
+    char Brand[7],
+    char Model[10],
+    char Carcase[15],
+    char Drive[10]
+);
 
 // поиск элемента по названию продукта O(n)
-ListAuto* FindAuto(ListAuto* firstItem, const char* productName);
+ListAuto* FindAuto(ListAuto* firstItem, const char* brandName);
 
 // авторизация пользователя
-bool FindUser(ListUser* firstItem, const char* productName);
+bool FindUser(ListUser* firstItem, char userName, char password);
 
 bool SaveListToBinaryFile(ListAuto* firstItem, const std::string& filename);
 

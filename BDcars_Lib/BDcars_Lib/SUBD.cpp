@@ -26,7 +26,8 @@ void PrintListAuto(ListAuto* firstItem)
     }
 }
 
-void DeleteAuto(ListAuto*& firstItem)
+// очистка всего списка автомобилей
+void DeleteListAuto(ListAuto*& firstItem)
 {
     auto temp = firstItem; // вспомогательный указатель, который будет указывать на удаляемый элемент
     // в то время, как firstItem мы будем продвигать вперед на следующие элемент
@@ -38,8 +39,98 @@ void DeleteAuto(ListAuto*& firstItem)
     } // в конце цикла firstItem будет равен nullptr
 }
 
+// удаление автомобиля по фильтру
+void DeleteAutoForFilter(ListAuto*& firstItem, ListAuto* filter, char* value)
+{
+    int numElements = 6;
+    ListAuto item;
+    auto firstValue = firstItem;
+    auto temp = firstItem;
+    while (firstItem != nullptr)
+    {
+        firstItem = firstItem->next;
+        if (temp == filter)
+        {
+            for (int i = 0; i < numElements; i++)
+            {
+                delete temp;
+
+            }
+        }
+        else temp = firstItem;
+    }
+}
+
+void Replace(char* str, char what, char value)
+{
+    int len = strlen(str);
+    for (int i = 0; i < len; i++)
+        if (str[i] == what)
+            str[i] = value;
+}
+
+ListAuto* GetLast(ListAuto* firstItem)
+{
+    if (firstItem == nullptr) return nullptr; // если список пуст, то вернем пустой указатель
+    auto temp = firstItem; // временной переменной присваиваем указатель на первый элемент
+    while (temp->next != nullptr) // пока ее поле next не пустой указатель (если пустой, то мы достигли последнего элемента!)
+    {
+        // запомните это присваивание - это переход к следующему в списке элементу
+        temp = temp->next;  // перемещаемся к следующему элементу списка
+    }
+    return temp; // возвращаем указатель на последний элемент
+}
+
+ListAuto* AddLast(
+    ListAuto*& firstItem,
+    char productVin[17],
+    char productBrand[7],
+    char productModel[10],
+    char productCarcase[15],
+    char productDrive[10])
+{
+    if (firstItem == nullptr) // если список пуст, вызовем функцию добавления в начало списка
+    {
+        AddFirst(firstItem, productVin, productBrand, productModel, productCarcase, productDrive);
+        return firstItem;
+    }
+    ListAuto* temp = new ListAuto; // создаем в памяти новый элемент списка
+    strcpy_s(temp->vin, productVin);   // присваиваем полям элемента нужные значения
+    strcpy_s(temp->brand, productBrand); // имя продукта - это стока C-Style, поэтому копируем ее с помощью специальной функции копирования строк
+    strcpy_s(temp->model, productModel); // присваиваем полям элемента нужные значения
+    strcpy_s(temp->carcase, productCarcase);
+    strcpy_s(temp->drive, productDrive); // присваиваем полям элемента нужные значения
+    temp->next = nullptr; // нам нужно встроить элемент в конец списка, поэтому
+    // указатель next настраиваем таким образом, чтобы он был пустым
+    // который ранее был первым (на него указывает first)
+    GetLast(firstItem)->next = temp;    // а теперь делаем, чтобы элемент, который до этого был последним
+    // (а его мы получаем с помощью уже созданной GetLast)
+    // ссылался на наш новый элемент
+    return temp; // возвращаем указатель на последний элемент
+}
+
+void AddFirst(
+    ListAuto*& firstItem,
+    char productVin[17],
+    char productBrand[7],
+    char productModel[10],
+    char productCarcase[15],
+    char productDrive[10])
+{
+    ListAuto* temp = new ListAuto; // создаем в памяти новый элемент списка
+    strcpy_s(temp->vin, productVin);   // присваиваем полям элемента нужные значения
+    strcpy_s(temp->brand, productBrand); // имя продукта - это стока C-Style, поэтому копируем ее с помощью специальной функции копирования строк
+    strcpy_s(temp->model, productModel); // присваиваем полям элемента нужные значения
+    strcpy_s(temp->carcase, productCarcase);
+    strcpy_s(temp->drive, productDrive);// присваиваем полям элемента нужные значения
+    temp->next = firstItem; // нам нужно встроить элемент в начало списка, поэтому
+    // указатель next настраиваем таким образом, чтобы он указывал на элемент
+    // который ранее был первым (на него указывает first)
+    firstItem = temp;       // а теперь делаем, чтобы first указывал на наш созданный элемент
+}
+
 // поиск элемента по названию продукта O(n)
-ListAuto* Find(ListAuto* firstItem, const char* brandName)
+ListAuto* FindAuto(ListAuto* firstItem, const char* brandName)
 {
     auto temp = firstItem; // начинаем с указанного элемента
     while (temp != nullptr) // перебираем весь список
@@ -53,12 +144,10 @@ ListAuto* Find(ListAuto* firstItem, const char* brandName)
     return nullptr; // если ничего не нашли - возвращаем nullptr
 }
 
-void Replace(char* str, char what, char value)
+// поиск пользователя
+bool FindUser(ListUser* firstItem, char userName, char password)
 {
-    int len = strlen(str);
-    for (int i = 0; i < len; i++)
-        if (str[i] == what)
-            str[i] = value;
+
 }
 
 bool SaveListToBinaryFile(ListAuto* firstItem, const std::string& filename)
@@ -77,9 +166,9 @@ bool SaveListToBinaryFile(ListAuto* firstItem, const std::string& filename)
     return result;
 }
 
-ListAuto* LoadListFromBinaryFile(const std::string& filename)
+ListAuto* LoadListFromBinaryFile(const string& filename)
 {
-    std::ifstream f(filename, std::ios::binary);
+    ifstream f(filename, ios::binary);
     if (!f) return nullptr;
     ListAuto item;
     ListAuto* first = nullptr;
