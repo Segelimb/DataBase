@@ -40,26 +40,31 @@ void DeleteListAuto(ListAuto*& firstItem)
 }
 
 // удаление автомобиля по фильтру
-void DeleteAutoForFilter(ListAuto*& firstItem, ListAuto* filter, char* value)
+bool DeleteAuto(
+    ListAuto*& firstItem,
+    char find[17])
 {
-    int numElements = 6;
-    ListAuto item;
-    auto firstValue = firstItem;
+    if (firstItem == nullptr) return false;
     auto temp = firstItem;
-    while (firstItem != nullptr)
-    {
-        firstItem = firstItem->next;
-        if (temp == filter)
-        {
-            for (int i = 0; i < numElements; i++)
-            {
-                delete temp;
-
-            }
-        }
-        else temp = firstItem;
+    if (temp->vin == find)  // если указатель на начало списка и на удаляемый элемент совпадают, то
+    {                       // частный случай - удаляем первый в списке элемент
+        firstItem = firstItem->next; // правим указатель на первый элемент таким образом, чтобы он указывал на следующий в списке
+        delete temp; // удаляем первый элемент
+            return true; // его нет, возвращаем false
     }
+    // если удаляемый элемент не первый в списке
+    while (temp->vin != find && temp->next != nullptr) // ищем элемент, предшествующий удаляемому
+    {
+        temp = temp->next; // передвижение к следующему
+    }
+    if (temp->next == nullptr) return false;
+    auto removableItem = temp->next; // иначе обозначили удаляемый элемент, он следующий по списку
+    temp->next = removableItem->next;
+    delete removableItem;   // удаляем элемент
+    return true;
 }
+
+
 
 void Replace(char* str, char what, char value)
 {
@@ -129,25 +134,28 @@ void AddFirst(
     firstItem = temp;       // а теперь делаем, чтобы first указывал на наш созданный элемент
 }
 
-// поиск элемента по названию продукта O(n)
-ListAuto* FindAuto(ListAuto* firstItem, const char* brandName)
+// поиск автомобиля по фильтру
+ListAuto* FindAuto(ListAuto* firstItem, char* filter)
 {
-    auto temp = firstItem; // начинаем с указанного элемента
-    while (temp != nullptr) // перебираем весь список
+    auto temp = firstItem;
+    while (temp != nullptr)
     {
-        if (strcmp(temp->brand, brandName) == 0) // если название продукта подходит
-        {
-            return temp; // возвращаем указатель на найденный элемент
-        }
+        if ((strcmp(temp->brand, filter) == 0) || (strcmp(temp->model, filter) == 0) || (strcmp(temp->vin, filter) == 0)) return temp; // возвращаем указатель на найденный элемент
         temp = temp->next; // переходим к следующему элементу
     }
     return nullptr; // если ничего не нашли - возвращаем nullptr
 }
 
 // поиск пользователя
-bool FindUser(ListUser* firstItem, char userName, char password)
+bool FindUser(ListUser* firstItem, char* userName, char* password)
 {
-
+    auto temp = firstItem;
+    while (temp != nullptr)
+    {
+        if (temp->login == userName && temp->password == password) return true; // возвращаем указатель на найденный элемент
+        temp = temp->next; // переходим к следующему элементу
+    }
+    return false; // если ничего не нашли - возвращаем nullptr
 }
 
 bool SaveListToBinaryFile(ListAuto* firstItem, const std::string& filename)

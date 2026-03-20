@@ -1,6 +1,7 @@
 #pragma once
 struct ListAuto
 {
+    ListAuto* first;
     char vin[17]; // уникальный номер
     char brand[7];  // название
     char model[10];
@@ -25,7 +26,7 @@ void PrintListAuto(ListAuto* firstItem);
 // удаление списка O(n)
 // указатель на первый элемент передаем по ссылке
 void DeleteListAuto(ListAuto*& firstItem);
-void DeleteAutoForFilter(ListAuto*& firstItem);
+bool DeleteAuto(ListAuto*& firstItem, char find[17]);
 
 // Функция получения указателя на последний элемент O(n)
 // Если функция не изменяет указатель на первый элемент, то передаем его по значению
