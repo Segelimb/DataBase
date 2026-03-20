@@ -1,12 +1,33 @@
 ﻿#include <iostream>
 #include <conio.h>
+#include <fstream>
 // #include "students.h"// подключаем свою библиотеку работы со связным списком
 						// список должен хранить данные о вашей предметной области
 						// и реализовывать функции, согласно вашему заданию
 using namespace std;
 
+const string autoFileName = "ListAutos.bin";
+const string userFileName = "ListUser.bin";
+
+struct ListUser
+{
+	char login[20];
+	char password[20];
+	ListUser* next;
+};
+
+struct ListAuto
+{
+	char vin[17];
+	char brand[7];
+	char model[10];
+	char carcase[15];
+	char drive[10];
+	ListAuto* next;
+};
+
 // функция добавления данных
-void AddData() // TODO: HistLL
+void AddData()
 {
 	system("cls");
 	char vin[17], brand[7], model[10], carcase[15], drive[10];
@@ -21,21 +42,22 @@ void AddData() // TODO: HistLL
 	cin >> carcase;
 	cout << "Введите тип привода автомобиля: ";
 	cin >> drive;
-
+	// AddLast(ListAuto * &firstItem, vin, brand, model, carcase, drive)
+	cout << "\nУспешно добавлены данные об автомобиле!";
 	_getch();
 }
 
 // функция печати данных
-void PrintData() // TODO: HistLL
+void PrintData()
 {
 	system("cls");
-	cout << "Список автомобилей в продаже:\n";
-	// здесь реализуете свой алгоритм
+	cout << "Список автомобилей в продаже:\n\n";
+	// PrintListAuto(ListAuto* firstItem)
 	_getch();
 }
 
 // функция удаления данных
-void DeleteData() // TODO: HistLL
+void DeleteData()
 {
 	system("cls");
 	cout << "Введите уникальный номер автомобиля для удаления:\n";
@@ -48,16 +70,27 @@ void PrintFilteredData()
 {
 	system("cls");
 	cout << "Поиск автомобиля по фильтру:\n"; // например выводим только отличников
-	// здесь реализуете свой алгоритм
+	
 	_getch();
 }
 
 // функция загрузки данных
-bool LoadData()
+bool LoadData(ListAuto* &firstItemAuto, ListAuto* &firstItemUser)
 {
-	// реализуйте здесь алгоритм чтения базы данных из файла
-	// возвращайте true, если чтение прошло успешно и false в противном случае
+	//if(firstItemAuto || firstItemUser == nullptr) return false;
 	return true;
+}
+
+bool Authorization(ListAuto* firstItemUser)
+{
+	char login[20], password[20];
+	cout << "Введите логин пользователя: ";
+	cin >> login;
+	cout << "Введите пароль: ";
+	cin >> password;
+	return true;
+	// if(FindUser(firstItemUser, login, password)) cout << "/nАвторизация выполнена успешно!"
+
 }
 
 // вывод в консоль меню программы
@@ -78,7 +111,7 @@ char MainMenu()
 		char choice = _getch(); // считываем нажатую пользователем клавишу
 		if (choice < '1' || choice > '5') // проверяем, соответствует ли клавиша пунктам менюд
 		{	// если нет, то требуем повторить ввод
-			cout << "Такого варианта не существует! Нажмите любую клавишу...";
+			cout << "\nТакого варианта не существует! Нажмите любую клавишу...";
 			_getch();
 		}
 		else
@@ -120,13 +153,16 @@ void HandleEvents()
 
 int main()
 {
+	ListAuto* firstItemAuto = nullptr;
+	ListAuto* firstItemUser = nullptr;
 	setlocale(LC_ALL, "");
-	if (!LoadData()) // если чтение базы данных неудачно, то продолжение выполнения программы невозможно
+	if (!LoadData(firstItemAuto, firstItemUser)) // если чтение базы данных неудачно, то продолжение выполнения программы невозможно
 	{	// выводим сообщение об ошибке и выходим с кодом 1
 		cout << "Ошибка чтения базы данных\n";
 		return 1;
 		// как вариант, если базу прочитать невозможно, вы можете создать новую базу данных и продолжить работу
 		// с программой
 	}
-	HandleEvents(); // вызываем функцию обработки нажатий клавиш пользователем
+	if (Authorization(firstItemUser))
+		HandleEvents(); // вызываем функцию обработки нажатий клавиш пользователем
 }
