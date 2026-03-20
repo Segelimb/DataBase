@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <string>
 #include "SUBD.h"
 using namespace std;
 
@@ -52,6 +53,13 @@ ListAuto* Find(ListAuto* firstItem, const char* brandName)
     return nullptr; // если ничего не нашли - возвращаем nullptr
 }
 
+void Replace(char* str, char what, char value)
+{
+    int len = strlen(str);
+    for (int i = 0; i < len; i++)
+        if (str[i] == what)
+            str[i] = value;
+}
 
 bool SaveListToBinaryFile(ListAuto* firstItem, const std::string& filename)
 {
@@ -61,7 +69,7 @@ bool SaveListToBinaryFile(ListAuto* firstItem, const std::string& filename)
     auto temp = firstItem;
     while (temp != nullptr)
     {
-        f.write((char*)temp, sizeof(ListItem));
+        f.write((char*)temp, sizeof(ListAuto));
         temp = temp->next;
     }
     bool result = f.good();
@@ -69,21 +77,21 @@ bool SaveListToBinaryFile(ListAuto* firstItem, const std::string& filename)
     return result;
 }
 
-ListItem* LoadListFromBinaryFile(const std::string& filename)
+ListAuto* LoadListFromBinaryFile(const std::string& filename)
 {
     std::ifstream f(filename, std::ios::binary);
     if (!f) return nullptr;
-    ListItem item;
-    ListItem* first = nullptr;
-    while (f.read((char*)&item, sizeof(ListItem)))
+    ListAuto item;
+    ListAuto* first = nullptr;
+    while (f.read((char*)&item, sizeof(ListAuto)))
     {
-        AddLast(first, item.id, item.name, item.price, item.count);
+        AddLast(first, item.vin, item.brand, item.model, item.carcase, item.drive);
     }
     f.close();
     return first;
 }
 
-bool SaveListToTextFile(ListItem* firstItem, const std::string& filename)
+bool SaveListToTextFile(ListAuto* firstItem, const std::string& filename)
 {
     if (firstItem == nullptr) return false;
     std::ofstream f(filename);
@@ -92,10 +100,10 @@ bool SaveListToTextFile(ListItem* firstItem, const std::string& filename)
     char itemCopy[30];
     while (temp != nullptr)
     {
-        strcpy_s(itemCopy, temp->name);
+        strcpy_s(itemCopy, temp->brand);
         Replace(itemCopy, ' ', '_');
-        f << temp->id << " " << itemCopy << " " << temp->price
-            << " " << temp->count << "\n";
+        f << temp->vin << " " << itemCopy << " " << temp->model
+            << " " << temp->carcase << "\n";
         temp = temp->next;
     }
     bool result = f.good();
@@ -103,16 +111,16 @@ bool SaveListToTextFile(ListItem* firstItem, const std::string& filename)
     return result;
 }
 
-ListItem* LoadListFromTextFile(const std::string& filename)
+ListAuto* LoadListFromTextFile(const std::string& filename)
 {
     std::ifstream f(filename);
     if (!f) return nullptr;
-    ListItem item;
-    ListItem* first = nullptr;
-    while (f >> item.id >> item.name >> item.price >> item.count)
+    ListAuto item;
+    ListAuto* first = nullptr;
+    while (f >> item.vin >> item.brand >> item.model >> item.carcase >> item.drive)
     {
-        Replace(item.name, '_', ' ');
-        AddLast(first, item.id, item.name, item.price, item.count);
+        Replace(item.brand, '_', ' ');
+        AddLast(first, item.vin, item.brand, item.model, item.carcase, item.drive);
     }
     f.close();
     return first;

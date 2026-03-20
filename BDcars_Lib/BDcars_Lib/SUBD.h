@@ -40,7 +40,7 @@ ListAuto* AddLast(
     char drive[10]
 );
 
-
+void Replace(ListAuto* item, char newProductVin, const char* newProductBrand, char newProductModel, char newProductCarcase, char newProductDrive);
 
 // поиск элемента по названию продукта O(n)
 ListAuto* FindAuto(ListAuto* firstItem, const char* productName);
