@@ -74,7 +74,7 @@ bool DeleteAuto(
 {
     if (firstItem == nullptr) return false;
     auto temp = firstItem;
-    if (*temp->vin == *find)  // если указатель на начало списка и на удаляемый элемент совпадают, то
+    if (strcmp(temp->vin, find) == 0)  // если указатель на начало списка и на удаляемый элемент совпадают, то
     {                       // частный случай - удаляем первый в списке элемент
         firstItem = firstItem->next; // правим указатель на первый элемент таким образом, чтобы он указывал на следующий в списке
         delete temp; // удаляем первый элемент
@@ -82,11 +82,11 @@ bool DeleteAuto(
         return true; // его нет, возвращаем false
     }
     // если удаляемый элемент не первый в списке
-    while (*temp->next->vin != *find && temp->next != nullptr) // ищем элемент, предшествующий удаляемому
+    while ((strcmp(temp->next->vin, find) != 0) && temp->next->next != nullptr) // ищем элемент, предшествующий удаляемому
     {
         temp = temp->next; // передвижение к следующему
     }
-    if (temp->next == nullptr) return false;
+    if ((strcmp(temp->next->vin, find) != 0) && temp->next->next == nullptr) return false;
     auto removableItem = temp->next; // иначе обозначили удаляемый элемент, он следующий по списку
     temp->next = removableItem->next;
     delete removableItem;   // удаляем элемент
@@ -208,7 +208,7 @@ bool FindUser(ListUser* firstItem, char userName[20], char password[20])
     auto temp = firstItem;
     while (temp != nullptr)
     {
-        if (*temp->login == *userName && *temp->password == *password) return true; // возвращаем указатель на найденный элемент
+        if ((strcmp(temp->login, userName) == 0) && (strcmp(temp->password, password) == 0)) return true; // возвращаем указатель на найденный элемент
         temp = temp->next; // переходим к следующему элементу
     }
     return false; // если ничего не нашли - возвращаем nullptr
@@ -448,7 +448,7 @@ char MainMenu()
 		// выводим строки меню, цивра в скобках - клавиша, которую нужно нажать для выбора соответствующего действия
 		cout << "[1] Добавить автомобиль" << endl;
 		cout << "[2] Вывести список автомобилей" << endl;
-		cout << "[3] Поиск по фильтрам" << endl;
+		cout << "[3] Поиск по фильтру" << endl;
 		cout << "[4] Удалить данные об автомобиле" << endl;
 		cout << "[5] Завершить работу" << endl;
 
