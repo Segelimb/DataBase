@@ -18,38 +18,13 @@ struct ListUser
 
 struct ListAuto
 {
-	char vin[17];
+	char vin[18];
 	char brand[7];
 	char model[10];
 	char carcase[15];
 	char drive[10];
 	ListAuto* next;
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -95,18 +70,19 @@ void DeleteListAuto(ListAuto*& firstItem)
 // удаление автомобиля по фильтру
 bool DeleteAuto(
     ListAuto*& firstItem,
-    char find[17])
+    char find[18])
 {
     if (firstItem == nullptr) return false;
     auto temp = firstItem;
-    if (temp->vin == find)  // если указатель на начало списка и на удаляемый элемент совпадают, то
+    if (*temp->vin == *find)  // если указатель на начало списка и на удаляемый элемент совпадают, то
     {                       // частный случай - удаляем первый в списке элемент
         firstItem = firstItem->next; // правим указатель на первый элемент таким образом, чтобы он указывал на следующий в списке
         delete temp; // удаляем первый элемент
+        //firstItem = nullptr;
         return true; // его нет, возвращаем false
     }
     // если удаляемый элемент не первый в списке
-    while (temp->vin != find && temp->next != nullptr) // ищем элемент, предшествующий удаляемому
+    while (*temp->next->vin != *find && temp->next != nullptr) // ищем элемент, предшествующий удаляемому
     {
         temp = temp->next; // передвижение к следующему
     }
@@ -141,7 +117,7 @@ ListAuto* GetLast(ListAuto* firstItem)
 
 void AddFirst(
     ListAuto*& firstItem,
-    char productVin[17],
+    char productVin[18],
     char productBrand[7],
     char productModel[10],
     char productCarcase[15],
@@ -159,10 +135,9 @@ void AddFirst(
     firstItem = temp;       // а теперь делаем, чтобы first указывал на наш созданный элемент
 }
 
-
 ListAuto* AddLast(
     ListAuto*& firstItem,
-    char productVin[17],
+    char productVin[18],
     char productBrand[7],
     char productModel[10],
     char productCarcase[15],
@@ -189,24 +164,51 @@ ListAuto* AddLast(
 }
 
 // поиск автомобиля по фильтру
-ListAuto* FindAuto(ListAuto* firstItem, char* filter)
+bool FindAuto(ListAuto* firstItem, int filter, char find[18])
 {
     auto temp = firstItem;
+    bool result = false;
     while (temp != nullptr)
     {
-        if ((strcmp(temp->brand, filter) == 0) || (strcmp(temp->model, filter) == 0) || (strcmp(temp->vin, filter) == 0)) return temp; // возвращаем указатель на найденный элемент
-        temp = temp->next; // переходим к следующему элементу
+        switch (filter) // проверяем какую клавишу нажал пользователь
+        {
+        case 1: // если 1 то вызываем функцию добавления данных
+            if (strcmp(temp->vin, find) == 0)
+            {
+                result = true;
+                cout << endl;
+                PrintAuto(temp);
+            }
+            break;
+        case 2: // если 2 то вызываем функцию вывода данных
+            if (strcmp(temp->brand, find) == 0)
+            {
+                result = true;
+                cout << endl;
+                PrintAuto(temp);
+            }
+            break;
+        case 3: // если 5 то вызываем функцию вывода данных по фильтру
+            if (strcmp(temp->model, find) == 0)
+            {
+                result = true;
+                cout << endl;
+                PrintAuto(temp);
+            }
+            break;
+        }
+        temp = temp->next;
     }
-    return nullptr; // если ничего не нашли - возвращаем nullptr
+    return result; // если ничего не нашли - возвращаем nullptr
 }
 
 // поиск пользователя
-bool FindUser(ListUser* firstItem, char* userName, char* password)
+bool FindUser(ListUser* firstItem, char userName[20], char password[20])
 {
     auto temp = firstItem;
     while (temp != nullptr)
     {
-        if (temp->login == userName && temp->password == password) return true; // возвращаем указатель на найденный элемент
+        if (*temp->login == *userName && *temp->password == *password) return true; // возвращаем указатель на найденный элемент
         temp = temp->next; // переходим к следующему элементу
     }
     return false; // если ничего не нашли - возвращаем nullptr
@@ -242,18 +244,63 @@ ListAuto* LoadListFromBinaryFile(const string& filename)
     return first;
 }
 
+void AddFirstUser(ListUser*& firstItem, char login[20], char password[20])
+{
+    ListUser* temp = new ListUser; // создаем в памяти новый элемент списка
+    strcpy_s(temp->login, login);   // присваиваем полям элемента нужные значения
+    strcpy_s(temp->password, password); // имя продукта - это стока C-Style, поэтому копируем ее с помощью специальной функции копирования строк
+
+    temp->next = firstItem; // нам нужно встроить элемент в начало списка, поэтому
+    // указатель next настраиваем таким образом, чтобы он указывал на элемент
+    // который ранее был первым (на него указывает first)
+    firstItem = temp;       // а теперь делаем, чтобы first указывал на наш созданный элемент
+}
+
+ListUser* GetLastUser(ListUser* firstItem)
+{
+    if (firstItem == nullptr) return nullptr; // если список пуст, то вернем пустой указатель
+    auto temp = firstItem; // временной переменной присваиваем указатель на первый элемент
+    while (temp->next != nullptr) // пока ее поле next не пустой указатель (если пустой, то мы достигли последнего элемента!)
+    {
+        // запомните это присваивание - это переход к следующему в списке элементу
+        temp = temp->next;  // перемещаемся к следующему элементу списка
+    }
+    return temp; // возвращаем указатель на последний элемент
+}
+
+ListUser* AddLastUser(ListUser*& firstItem, char login[20], char password[20])
+{
+    if (firstItem == nullptr) // если список пуст, вызовем функцию добавления в начало списка
+    {
+        AddFirstUser(firstItem, login, password);
+        return firstItem;
+    }
+    ListUser* temp = new ListUser; // создаем в памяти новый элемент списка
+    strcpy_s(temp->login, login);   // присваиваем полям элемента нужные значения
+    strcpy_s(temp->password, password); // имя продукта - это стока C-Style, поэтому копируем ее с помощью специальной функции копирования строк
+    temp->next = nullptr; // нам нужно встроить элемент в конец списка, поэтому
+    // указатель next настраиваем таким образом, чтобы он был пустым
+    // который ранее был первым (на него указывает first)
+    GetLastUser(firstItem)->next = temp;    // а теперь делаем, чтобы элемент, который до этого был последним
+    // (а его мы получаем с помощью уже созданной GetLast)
+    // ссылался на наш новый элемент
+    return temp; // возвращаем указатель на последний элемент
+}
 
 
-
-
-
-
-
-
-
-
-
-
+ListUser* LoadListUserFromBinaryFile(const string& filename)
+{
+    ifstream f(filename, ios::binary);
+    if (!f) return nullptr;
+    ListUser item;
+    ListUser* first = nullptr;
+    while (f.read((char*)&item, sizeof(ListUser)))
+    {
+        AddLastUser(first, item.login, item.password);
+    }
+    f.close();
+    return first;
+}
 
 
 
@@ -267,7 +314,7 @@ ListAuto* LoadListFromBinaryFile(const string& filename)
 void AddData(ListAuto*& firstItemAuto)
 {
 	system("cls");
-	char vin[17], brand[7], model[10], carcase[15], drive[10];
+	char vin[18], brand[7], model[10], carcase[15], drive[10];
 	cout << "Добавление данных о автомобиле:\n \n";
 	cout << "Введите уникальный номер автомобиля: ";
 	cin >> vin;
@@ -294,41 +341,101 @@ void PrintDataListAuto(ListAuto*& firstItemAuto)
 }
 
 // функция удаления данных
-void DeleteData()
+void DeleteData(ListAuto*& firstItemAuto)
 {
 	system("cls");
+    char vin[18];
 	cout << "Введите уникальный номер автомобиля для удаления:\n";
-	// здесь реализуете свой алгоритм
+    cin >> vin;
+    if (DeleteAuto(firstItemAuto, vin)) cout << "Удаление произведено успешно!";
+    else cout << "Автомобиль с данным номером не найден";
 	_getch();
 }
 
 // функция печати данных по критерию отбора
-void PrintFilteredData()
+char MenuPrintFilteredData(ListAuto*& firstItemAuto)
 {
 	system("cls");
-	cout << "Поиск автомобиля по фильтру:\n"; // например выводим только отличников
+	cout << "Поиск автомобиля по фильтру:\n\n"; // например выводим только отличников
+    cout << "[1] Поиск автомобиля по уникальному номеру" << endl;
+    cout << "[2] Поиск автомобиля по марке" << endl;
+    cout << "[3] Поиск автомобиля по модели" << endl;
+    cout << "[4] Выход в главное меню" << endl << endl;
+    cout << "Для выбора пункта меню нажмите клавишу с номером нужного действия > ";
+    char choice = _getch(); // считываем нажатую пользователем клавишу
+    if (choice < '1' || choice > '5') // проверяем, соответствует ли клавиша пунктам менюд
+    {	// если нет, то требуем повторить ввод
+        cout << "\nТакого варианта не существует! Нажмите любую клавишу...";
+        _getch();
+    }
+    else
+    {	// если соответствует, то возвращаем в вызываемую программу символ
+        // соответствующий нажатой клавише
+        return choice;
+    }	
+}
 
-	_getch();
+void PrintFilteredData(ListAuto*& firstItemAuto)
+{
+    char choice = 0;
+    choice = MenuPrintFilteredData(firstItemAuto); // определяем, какой пункт меню выбрал пользователь
+    if (choice == '4') return;
+    system("cls");
+    char find[18];
+    bool AutoFind;
+    cout << "Введите значение фильтра: ";
+    cin >> find;
+    // переменная choice будет хранить символ, соответствующий 
+    // выбранному пункту меню
+    switch (choice) // проверяем какую клавишу нажал пользователь
+    {
+    case '1': // если 1 то вызываем функцию добавления данных
+        AutoFind = FindAuto(firstItemAuto, 1, find);
+        break;
+    case '2': // если 2 то вызываем функцию вывода данных
+        AutoFind = FindAuto(firstItemAuto, 2, find);
+        break;
+    case '3': // если 5 то вызываем функцию вывода данных по фильтру
+        AutoFind = FindAuto(firstItemAuto, 3, find);
+        break;
+    default:
+        AutoFind = false;
+        break;
+    }
+    cout << endl;
+    if (AutoFind == false) cout << endl <<"Данный авто не найден";
+    _getch();
 }
 
 // функция загрузки данных
-bool LoadData(ListAuto*& firstItemAuto, ListAuto*& firstItemUser)
+bool LoadData(ListAuto*& firstItemAuto, ListUser*& firstItemUser)
 {
-    //firstItemAuto = LoadListFromBinaryFile(autoFileName);
-	//firstItemUser = LoadListFromBinaryFile(userFileName);
-	if(firstItemAuto /* || firstItemUser */ == nullptr) return false;
+    firstItemAuto = LoadListFromBinaryFile(autoFileName);
+	firstItemUser = LoadListUserFromBinaryFile(userFileName);
+	if(firstItemAuto == nullptr || firstItemUser == nullptr) return false;
 	return true;
 }
 
-bool Authorization(ListAuto* firstItemUser)
+bool Authorization(ListUser* firstItemUser)
 {
 	char login[20], password[20];
 	cout << "Введите логин пользователя: ";
 	cin >> login;
 	cout << "Введите пароль: ";
 	cin >> password;
-	return true;
-	//if (FindUser(firstItemUser, *login, *password)) cout << "/nАвторизация выполнена успешно!";
+	//return true;
+    if (FindUser(firstItemUser, login, password))
+    {
+        cout << "\nАвторизация выполнена успешно!";
+        _getch();
+        return true;
+    }
+    else
+    {
+        cout << "\nНеверный логин или пароль";
+        _getch();
+        return false;
+    }
 }
 
 // вывод в консоль меню программы
@@ -377,14 +484,14 @@ void HandleEvents(ListAuto*& firstItemAuto)
 		case '2': // если 2 то вызываем функцию вывода данных
             PrintDataListAuto(firstItemAuto);
 			break;
-		case '3': // если 4 то вызываем функцию удаления данных
-			DeleteData();
-			break;
-		case '4': // если 5 то вызываем функцию вывода данных по фильтру
-			PrintFilteredData();
-			break;
+		case '3': // если 5 то вызываем функцию вывода данных по фильтру
+            PrintFilteredData(firstItemAuto);
+            break;
+		case '4': // если 4 то вызываем функцию удаления данных 
+            DeleteData(firstItemAuto);
+            break;
 		case '5': // // если 1 то выходим
-            SaveListToBinaryFile(firstItemAuto, userFileName);
+            SaveListToBinaryFile(firstItemAuto, autoFileName);
 			return;
 		}
 	}
@@ -393,7 +500,7 @@ void HandleEvents(ListAuto*& firstItemAuto)
 int main()
 {
 	ListAuto* firstItemAuto = nullptr;
-	ListAuto* firstItemUser = nullptr;
+    ListUser* firstItemUser = nullptr;
 	setlocale(LC_ALL, "");
 	if (!LoadData(firstItemAuto, firstItemUser)) // если чтение базы данных неудачно, то продолжение выполнения программы невозможно
 	{	// выводим сообщение об ошибке и выходим с кодом 1
