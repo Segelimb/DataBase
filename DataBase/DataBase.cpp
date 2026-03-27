@@ -1,30 +1,31 @@
-﻿#include <iostream>
+﻿
+
+#include <iostream>
 #include <conio.h>
 #include <fstream>
-// #include "students.h"// подключаем свою библиотеку работы со связным списком
-						// список должен хранить данные о вашей предметной области
-						// и реализовывать функции, согласно вашему заданию
+#include "../SUBD/SUBD.h"
+
 using namespace std;
 
 const string autoFileName = "ListAutos.bin";
 const string userFileName = "ListUser.bin";
 
-struct ListUser
-{
-	char login[20];
-	char password[20];
-	ListUser* next;
-};
-
-struct ListAuto
-{
-	char vin[17];
-	char brand[7];
-	char model[10];
-	char carcase[15];
-	char drive[10];
-	ListAuto* next;
-};
+//struct ListUser
+//{
+//	char login[20];
+//	char password[20];
+//	ListUser* next;
+//};
+//
+//struct ListAuto
+//{
+//	char vin[17];
+//	char brand[7];
+//	char model[10];
+//	char carcase[15];
+//	char drive[10];
+//	ListAuto* next;
+//};
 
 // функция добавления данных
 void AddData(ListAuto*& firstItemAuto)
