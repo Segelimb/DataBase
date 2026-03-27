@@ -4,23 +4,6 @@
 
 using namespace std;
 
-struct ListUser
-{
-    char login[20];
-    char password[20];
-    ListUser* next;
-};
-
-struct ListAuto
-{
-    char vin[18];
-    char brand[7];
-    char model[10];
-    char carcase[15];
-    char drive[10];
-    ListAuto* next;
-};
-
 void PrintAuto(ListAuto* item)
 {
     setlocale(LC_ALL, "");

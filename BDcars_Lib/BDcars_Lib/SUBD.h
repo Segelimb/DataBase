@@ -1,4 +1,7 @@
 #pragma once
+#include <string>
+using std::string;
+
 struct ListUser
 {
     char login[20];
@@ -8,7 +11,6 @@ struct ListUser
 
 struct ListAuto
 {
-    ListAuto* first;
     char vin[18]; // уникальный номер
     char brand[7];  // название
     char model[10];
