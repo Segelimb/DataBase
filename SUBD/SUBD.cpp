@@ -83,6 +83,7 @@ ListAuto* GetLast(ListAuto* firstItem)
     return temp; // возвращаем указатель на последний элемент
 }
 
+// функция добавления первого автомобиля
 void AddFirst(
     ListAuto*& firstItem,
     char productVin[18],
@@ -103,6 +104,7 @@ void AddFirst(
     firstItem = temp;       // а теперь делаем, чтобы first указывал на наш созданный элемент
 }
 
+// функция добавления автомобиля в конец списка
 ListAuto* AddLast(
     ListAuto*& firstItem,
     char productVin[18],
@@ -140,7 +142,7 @@ bool FindAuto(ListAuto* firstItem, int filter, char find[18])
     {
         switch (filter) // проверяем какую клавишу нажал пользователь
         {
-        case 1: // если 1 то вызываем функцию добавления данных
+        case 1: // если 1 то вызываем функцию печати автомобилей по VIN номеру
             if (strcmp(temp->vin, find) == 0)
             {
                 result = true;
@@ -148,7 +150,7 @@ bool FindAuto(ListAuto* firstItem, int filter, char find[18])
                 PrintAuto(temp);
             }
             break;
-        case 2: // если 2 то вызываем функцию вывода данных
+        case 2: // если 2 то вызываем функцию печати автомобилей по марке
             if (strcmp(temp->brand, find) == 0)
             {
                 result = true;
@@ -156,7 +158,7 @@ bool FindAuto(ListAuto* firstItem, int filter, char find[18])
                 PrintAuto(temp);
             }
             break;
-        case 3: // если 5 то вызываем функцию вывода данных по фильтру
+        case 3: // если 5 то вызываем функцию печати автомобилей по модели
             if (strcmp(temp->model, find) == 0)
             {
                 result = true;
@@ -182,6 +184,7 @@ bool FindUser(ListUser* firstItem, char userName[20], char password[20])
     return false; // если ничего не нашли - возвращаем nullptr
 }
 
+// функция сохранения в бинарный файл
 bool SaveListToBinaryFile(ListAuto* firstItem, const std::string& filename)
 {
     if (firstItem == nullptr) return false;
@@ -198,6 +201,7 @@ bool SaveListToBinaryFile(ListAuto* firstItem, const std::string& filename)
     return result;
 }
 
+// функция загрузки в бинарный файл
 ListAuto* LoadListFromBinaryFile(const string& filename)
 {
     ifstream f(filename, ios::binary);
@@ -212,6 +216,7 @@ ListAuto* LoadListFromBinaryFile(const string& filename)
     return first;
 }
 
+// функция добавления первого пользователя
 void AddFirstUser(ListUser*& firstItem, char login[20], char password[20])
 {
     ListUser* temp = new ListUser; // создаем в памяти новый элемент списка
@@ -224,6 +229,7 @@ void AddFirstUser(ListUser*& firstItem, char login[20], char password[20])
     firstItem = temp;       // а теперь делаем, чтобы first указывал на наш созданный элемент
 }
 
+// функция поиска пользователя
 ListUser* GetLastUser(ListUser* firstItem)
 {
     if (firstItem == nullptr) return nullptr; // если список пуст, то вернем пустой указатель
@@ -236,6 +242,7 @@ ListUser* GetLastUser(ListUser* firstItem)
     return temp; // возвращаем указатель на последний элемент
 }
 
+// функция добавления нового пользователя
 ListUser* AddLastUser(ListUser*& firstItem, char login[20], char password[20])
 {
     if (firstItem == nullptr) // если список пуст, вызовем функцию добавления в начало списка
@@ -255,7 +262,7 @@ ListUser* AddLastUser(ListUser*& firstItem, char login[20], char password[20])
     return temp; // возвращаем указатель на последний элемент
 }
 
-
+// загрузка данных из бинарного файла
 ListUser* LoadListUserFromBinaryFile(const string& filename)
 {
     ifstream f(filename, ios::binary);

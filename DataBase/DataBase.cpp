@@ -1,31 +1,33 @@
-﻿
-
-#include <iostream>
+﻿#include <iostream>
 #include <conio.h>
 #include <fstream>
-#include "../SUBD/SUBD.h"
+#include "../SUBD/SUBD.h" // билиотека SUBD для работы с базой данных
 
 using namespace std;
 
 const string autoFileName = "ListAutos.bin";
 const string userFileName = "ListUser.bin";
 
-//struct ListUser
-//{
-//	char login[20];
-//	char password[20];
-//	ListUser* next;
-//};
-//
-//struct ListAuto
-//{
-//	char vin[17];
-//	char brand[7];
-//	char model[10];
-//	char carcase[15];
-//	char drive[10];
-//	ListAuto* next;
-//};
+bool ValidationUserName(char* login)
+{
+	if (strlen(login) > 20) return false;
+	return true;
+}
+
+// функция валидации VIN номера
+bool ValidationVIN(char* vin)
+{
+	if (strlen(vin) != 17) return false; // проверка на длину номера
+	for (int i = 0; i < 17; i++)
+	{
+		char symbol = vin[i];
+		if (symbol >= '0' && symbol <= '9') continue; // проверка на неразрешённые цифры
+		if (symbol >= 'A' && symbol <= 'Z' && symbol != 'I' && symbol != 'O' && symbol != 'Q') continue; // проверка на букавы
+		if (symbol >= 'a' && symbol <= 'z' && symbol != 'i' && symbol != 'o' && symbol != 'q') continue; // проверка на букавы
+		return false;
+	}
+	return true; // если всё ок, валидация пройдена
+}
 
 // функция добавления данных
 void AddData(ListAuto*& firstItemAuto)
@@ -35,6 +37,12 @@ void AddData(ListAuto*& firstItemAuto)
 	cout << "Добавление данных о автомобиле:\n \n";
 	cout << "Введите уникальный номер автомобиля: ";
 	cin >> vin;
+	if (!ValidationVIN(vin))
+	{
+		cout << endl << "Неверный VIN! Вас вернёт в главное меню после нажатия клавиши.";
+		_getch();
+		return;
+	}
 	cout << "Введите марку автомобиля: ";
 	cin >> brand;
 	cout << "Введите модель автомобиля: ";
@@ -100,7 +108,7 @@ void PrintFilteredData(ListAuto*& firstItemAuto)
 	system("cls");
 	char find[18];
 	bool AutoFind;
-	cout << "Введите значение фильтра: ";
+	cout << "Введите значение фильтра (точное соответствие): ";
 	cin >> find;
 	// переменная choice будет хранить символ, соответствующий 
 	// выбранному пункту меню
@@ -138,6 +146,14 @@ bool Authorization(ListUser* firstItemUser)
 	char login[20], password[20];
 	cout << "Введите логин пользователя: ";
 	cin >> login;
+
+	if (!ValidationUserName(login))
+	{
+		cout << "\nСлишком длинный login. \n!!!Размер не должен превышать 20 символов!!! \n\n";
+		_getch();
+		return false;
+	}
+
 	cout << "Введите пароль: ";
 	cin >> password;
 	//return true;
