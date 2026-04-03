@@ -87,7 +87,7 @@ ListAuto* GetLast(ListAuto* firstItem)
 void AddFirst(
     ListAuto*& firstItem,
     char productVin[18],
-    char productBrand[7],
+    char productBrand[10],
     char productModel[10],
     char productCarcase[15],
     char productDrive[10])
@@ -108,7 +108,7 @@ void AddFirst(
 ListAuto* AddLast(
     ListAuto*& firstItem,
     char productVin[18],
-    char productBrand[7],
+    char productBrand[10],
     char productModel[10],
     char productCarcase[15],
     char productDrive[10])

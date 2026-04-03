@@ -8,49 +8,35 @@ using namespace std;
 const string autoFileName = "ListAutos.bin";
 const string userFileName = "ListUser.bin";
 
-bool ValidationUserName(char* login)
-{
-	if (strlen(login) > 20) return false;
-	return true;
-}
 
-// функция валидации VIN номера
-bool ValidationVIN(char* vin)
+char* ImputValue(string print, int MaxSize)
 {
-	if (strlen(vin) != 17) return false; // проверка на длину номера
-	for (int i = 0; i < 17; i++)
+	char* str = new char[MaxSize];
+
+	while (1)
 	{
-		char symbol = vin[i];
-		if (symbol >= '0' && symbol <= '9') continue; // проверка на неразрешённые цифры
-		if (symbol >= 'A' && symbol <= 'Z' && symbol != 'I' && symbol != 'O' && symbol != 'Q') continue; // проверка на букавы
-		if (symbol >= 'a' && symbol <= 'z' && symbol != 'i' && symbol != 'o' && symbol != 'q') continue; // проверка на букавы
-		return false;
+		cout << print << " (Не более " << MaxSize - 1 << " символов): ";
+		cin.getline(str, MaxSize);
+		if (cin.fail())
+		{
+			cout << "Ошибка: введено слишком много символов!" << endl;
+			cin.clear();
+			cin.ignore(1000, '\n');
+		}
+		else break;
 	}
-	return true; // если всё ок, валидация пройдена
+	return str;
 }
-
 // функция добавления данных
 void AddData(ListAuto*& firstItemAuto)
 {
 	system("cls");
-	char vin[18], brand[7], model[10], carcase[15], drive[10];
 	cout << "Добавление данных о автомобиле:\n \n";
-	cout << "Введите уникальный номер автомобиля: ";
-	cin >> vin;
-	if (!ValidationVIN(vin))
-	{
-		cout << endl << "Неверный VIN! Вас вернёт в главное меню после нажатия клавиши.";
-		_getch();
-		return;
-	}
-	cout << "Введите марку автомобиля: ";
-	cin >> brand;
-	cout << "Введите модель автомобиля: ";
-	cin >> model;
-	cout << "Введите тип кузова автомобиля: ";
-	cin >> carcase;
-	cout << "Введите тип привода автомобиля: ";
-	cin >> drive;
+	char* vin = ImputValue("Введите уникальный номер автомобиля", 18);
+	char* brand = ImputValue("Введите марку автомобиля", 10);
+	char* model = ImputValue("Введите модель автомобиля", 10);
+	char* carcase = ImputValue("Введите тип кузова автомобиля", 15);
+	char* drive = ImputValue("Введите тип привода автомобиля", 10);
 	AddLast(firstItemAuto, vin, brand, model, carcase, drive);
 	cout << "\nУспешно добавлены данные об автомобиле!";
 	_getch();
@@ -69,9 +55,7 @@ void PrintDataListAuto(ListAuto*& firstItemAuto)
 void DeleteData(ListAuto*& firstItemAuto)
 {
 	system("cls");
-	char vin[18];
-	cout << "Введите уникальный номер автомобиля для удаления:\n";
-	cin >> vin;
+	char* vin = ImputValue("Введите уникальный номер автомобиля для удаления", 18);
 	if (DeleteAuto(firstItemAuto, vin)) cout << "Удаление произведено успешно!";
 	else cout << "Автомобиль с данным номером не найден";
 	_getch();
@@ -106,10 +90,9 @@ void PrintFilteredData(ListAuto*& firstItemAuto)
 	choice = MenuPrintFilteredData(firstItemAuto); // определяем, какой пункт меню выбрал пользователь
 	if (choice == '4') return;
 	system("cls");
-	char find[18];
 	bool AutoFind;
-	cout << "Введите значение фильтра (точное соответствие): ";
-	cin >> find;
+
+	char* find = ImputValue("Введите значение фильтра", 18);
 	// переменная choice будет хранить символ, соответствующий 
 	// выбранному пункту меню
 	switch (choice) // проверяем какую клавишу нажал пользователь
@@ -143,32 +126,34 @@ bool LoadData(ListAuto*& firstItemAuto, ListUser*& firstItemUser)
 
 bool Authorization(ListUser* firstItemUser)
 {
-	char login[20], password[20];
-	cout << "Введите логин пользователя: ";
-	cin >> login;
-
-	if (!ValidationUserName(login))
+	while (1)
 	{
-		cout << "\nСлишком длинный login. \n!!!Размер не должен превышать 20 символов!!! \n\n";
-		_getch();
-		return false;
+		system("cls");
+		char* login = ImputValue("Введите логин пользователя", 20);
+		char* password = ImputValue("Введите пароль", 20);
+		//return true;
+		if (FindUser(firstItemUser, login, password))
+		{
+			cout << "\nАвторизация выполнена успешно!";
+			_getch();
+			return true;
+		}
+		else
+		{
+			cout << "\nНеверный логин или пароль" << endl << endl;
+			cout << "[1] Повторить попытку" << endl;
+			cout << "[2] Закрыть программу" << endl << endl;
+			cout << "Для выбора пункта меню нажмите клавишу с номером нужного действия > ";
+			char choice = _getch(); // считываем нажатую пользователем клавишу
+			while (choice < '1' || choice > '2') // проверяем, соответствует ли клавиша пунктам менюд
+			{	// если нет, то требуем повторить ввод
+				cout << "\nТакого варианта не существует! Нажмите любую клавишу...";
+				choice = _getch();
+			}
+			if (choice == '2') break;
+		}
 	}
-
-	cout << "Введите пароль: ";
-	cin >> password;
-	//return true;
-	if (FindUser(firstItemUser, login, password))
-	{
-		cout << "\nАвторизация выполнена успешно!";
-		_getch();
-		return true;
-	}
-	else
-	{
-		cout << "\nНеверный логин или пароль";
-		_getch();
-		return false;
-	}
+	return false;
 }
 
 // вывод в консоль меню программы

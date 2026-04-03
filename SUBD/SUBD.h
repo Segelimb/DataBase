@@ -12,7 +12,7 @@ struct ListUser
 struct ListAuto
 {
     char vin[18]; // уникальный номер
-    char brand[7];  // название
+    char brand[10];  // название
     char model[10];
     char carcase[15]; // кузов
     char drive[10]; // привод
@@ -37,7 +37,7 @@ ListAuto* GetLast(ListAuto* firstItem);
 void AddFirst(
     ListAuto*& firstItem,
     char Vin[18],
-    char Brand[7],
+    char Brand[10],
     char Model[10],
     char Carcase[15],
     char Drive[10]
@@ -47,7 +47,7 @@ void AddFirst(
 ListAuto* AddLast(
     ListAuto*& firstItem,
     char vin[18],
-    char brand[7],
+    char brand[10],
     char model[10],
     char carcase[15],
     char drive[10]
