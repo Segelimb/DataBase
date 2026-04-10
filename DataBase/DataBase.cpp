@@ -8,7 +8,7 @@ using namespace std;
 const string autoFileName = "ListAutos.bin";
 const string userFileName = "ListUser.bin";
 
-
+// Валидация ввода
 char* ImputValue(string print, int MaxSize)
 {
 	char* str = new char[MaxSize];
@@ -28,6 +28,7 @@ char* ImputValue(string print, int MaxSize)
 	return str;
 }
 
+// Валидация VIN номера
 bool FindCopyVin(ListAuto* firstItem, char find[18])
 {
 	auto temp = firstItem;
@@ -105,6 +106,7 @@ char MenuPrintFilteredData(ListAuto*& firstItemAuto)
 	}
 }
 
+// Вывод данных по фильтру
 void PrintFilteredData(ListAuto*& firstItemAuto)
 {
 	char choice = 0;
@@ -145,6 +147,7 @@ bool LoadData(ListAuto*& firstItemAuto, ListUser*& firstItemUser)
 	return true;
 }
 
+// Функция авторизации пользователя
 bool Authorization(ListUser* firstItemUser)
 {
 	while (1)
@@ -236,6 +239,7 @@ void HandleEvents(ListAuto*& firstItemAuto)
 	}
 }
 
+// Основа основ
 int main()
 {
 	ListAuto* firstItemAuto = nullptr;
