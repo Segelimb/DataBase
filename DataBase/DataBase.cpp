@@ -27,12 +27,33 @@ char* ImputValue(string print, int MaxSize)
 	}
 	return str;
 }
+
+bool FindCopyVin(ListAuto* firstItem, char find[18])
+{
+	auto temp = firstItem;
+	bool result = false;
+	while (temp != nullptr)
+	{
+		if (strcmp(temp->vin, find) == 0)
+		{
+			result = true;
+		}
+		temp = temp->next;
+	}
+	return result;
+}
+
 // функция добавления данных
 void AddData(ListAuto*& firstItemAuto)
 {
 	system("cls");
 	cout << "Добавление данных о автомобиле:\n \n";
 	char* vin = ImputValue("Введите уникальный номер автомобиля", 18);
+	while (FindCopyVin(firstItemAuto, vin))
+	{
+		cout << "Данный авто уже существует!" << endl;
+		vin = ImputValue("Введите уникальный номер автомобиля", 18);
+	}
 	char* brand = ImputValue("Введите марку автомобиля", 10);
 	char* model = ImputValue("Введите модель автомобиля", 10);
 	char* carcase = ImputValue("Введите тип кузова автомобиля", 15);
